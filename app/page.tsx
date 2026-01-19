@@ -1,65 +1,135 @@
-import Image from "next/image";
+'use client';
+
+/**
+ * Home page with navigation and SRS dashboard
+ */
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { BookOpen, Brain, Download, Settings, PlayCircle } from 'lucide-react';
+import SRSDashboard from '@/components/SRSDashboard';
+import { getStudentSession } from '@/lib/storage';
+import { getAllReviewData } from '@/lib/storage';
+import { isDue } from '@/lib/srsAlgorithm';
 
 export default function Home() {
+  const [session, setSession] = useState<any>(null);
+  const [hasDueCards, setHasDueCards] = useState(false);
+
+  useEffect(() => {
+    const currentSession = getStudentSession();
+    setSession(currentSession);
+
+    if (currentSession) {
+      const reviewData = getAllReviewData(currentSession.userId);
+      const due = Object.values(reviewData).some((data) => isDue(data));
+      setHasDueCards(due);
+    }
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            Heisig Kanji Learning
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-gray-600">
+            Master kanji using the Heisig method with spaced repetition
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Dashboard */}
+        {session && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Your Progress</h2>
+            <SRSDashboard />
+
+            {hasDueCards && (
+              <div className="mt-4">
+                <Link
+                  href="/quiz"
+                  className="inline-flex items-center space-x-2 bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg"
+                >
+                  <PlayCircle size={20} />
+                  <span>Review Now</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Link
+            href="/study"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-400"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <BookOpen className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900">Study Mode</h3>
+            </div>
+            <p className="text-gray-600">
+              Browse through kanji, learn meanings, and create mnemonic stories to help you remember.
+            </p>
+          </Link>
+
+          <Link
+            href="/quiz"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-purple-400"
           >
-            Documentation
-          </a>
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="bg-purple-100 p-3 rounded-lg">
+                <Brain className="w-8 h-8 text-purple-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900">Quiz Mode</h3>
+            </div>
+            <p className="text-gray-600">
+              Test your knowledge with spaced repetition quizzes and self-assess your learning progress.
+            </p>
+          </Link>
         </div>
-      </main>
+
+        {/* Additional Actions */}
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Link
+              href="/join"
+              className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+            >
+              <Download className="w-5 h-5 text-purple-600" />
+              <span className="font-medium text-gray-900">Join Course</span>
+            </Link>
+
+            {session?.isMasterAccess && (
+              <Link
+                href="/instructor"
+                className="flex items-center space-x-3 p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+              >
+                <Settings className="w-5 h-5 text-amber-600" />
+                <span className="font-medium text-gray-900">Instructor Dashboard</span>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Instructions */}
+        {!session && (
+          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">Getting Started</h3>
+            <ol className="list-decimal list-inside space-y-2 text-blue-800">
+              <li>Get the course code from your instructor</li>
+              <li>Click "Join Course" and enter the code</li>
+              <li>Log in with your Panther ID</li>
+              <li>Start learning kanji!</li>
+            </ol>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
