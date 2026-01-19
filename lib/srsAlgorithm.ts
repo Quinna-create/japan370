@@ -133,14 +133,9 @@ export function getIntervalDisplay(interval: number): string {
 /**
  * Get preview intervals for each rating option
  */
-export function getPreviewIntervals(currentData: ReviewData | null): {
-  again: number;
-  hard: number;
-  good: number;
-  easy: number;
-} {
+export function getPreviewIntervals(currentData: ReviewData | null): Record<Rating, number> {
   const ratings: Rating[] = ['again', 'hard', 'good', 'easy'];
-  const intervals: any = {};
+  const intervals: Record<Rating, number> = {} as Record<Rating, number>;
 
   ratings.forEach((rating) => {
     const preview = calculateNextReview(currentData, rating);

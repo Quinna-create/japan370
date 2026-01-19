@@ -11,9 +11,10 @@ import SRSDashboard from '@/components/SRSDashboard';
 import { getStudentSession } from '@/lib/storage';
 import { getAllReviewData } from '@/lib/storage';
 import { isDue } from '@/lib/srsAlgorithm';
+import { StudentSession } from '@/types/kanji';
 
 export default function Home() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<StudentSession | null>(null);
   const [hasDueCards, setHasDueCards] = useState(false);
 
   useEffect(() => {
