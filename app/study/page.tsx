@@ -155,31 +155,30 @@ export default function StudyPage() {
         {/* Navigation */}
         <div className="mt-8 flex items-center justify-between">
           <button
-            onClick={handlePrevious}
-            disabled={currentIndex === 0}
-            className="flex items-center space-x-2 px-6 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          onClick={handlePrevious}
+          disabled={currentIndex === 0}
+          className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:bg-gray-400 font-medium"
           >
-            <ChevronLeft size={20} />
-            <span className="font-medium">Previous</span>
-          </button>
+          <ChevronLeft size={20} />
+          <span>Previous</span>
+      </button>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Use arrow keys to navigate
-            </p>
-            <div className="flex items-center justify-center space-x-2 mt-2">
-              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">←</kbd>
-              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">→</kbd>
-            </div>
-          </div>
+          <div className="text-center text-sm text-gray-700 mt-4">
+              <p className="flex items-center justify-center space-x-2 font-medium">
+              <kbd className="px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded font-mono">←</kbd>
+              <span>Previous</span>
+          <kbd className="px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded font-mono">→</kbd>
+          <span>Next</span>
+          </p>
+      </div>
 
           <button
-            onClick={handleNext}
-            disabled={currentIndex === kanjiList.length - 1}
-            className="flex items-center space-x-2 px-6 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <span className="font-medium">Next</span>
-            <ChevronRight size={20} />
+              onClick={handleNext}
+              disabled={currentIndex === filteredKanji.length - 1}
+              className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover: bg-blue-700 disabled: opacity-50 disabled:bg-gray-400 font-medium"
+            >
+              <span>Next</span>
+              <ChevronRight size={20} />
           </button>
         </div>
 
