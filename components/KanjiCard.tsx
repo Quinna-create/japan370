@@ -109,7 +109,7 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
               value={story}
               onChange={(e) => setStory(e.target.value)}
               placeholder="Write your mnemonic story here... Use the primitives to create a memorable story that helps you remember the kanji's meaning."
-              className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-800"
             />
           ) : (
             <div className="w-full min-h-[8rem] px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">

@@ -89,7 +89,7 @@ export default function SettingsPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter instructor password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
               />
               <p className="text-xs text-gray-500 mt-2">
                 This password is used for instructor authentication (not currently required, but can be implemented)
@@ -106,7 +106,7 @@ export default function SettingsPage() {
                 value={masterKeys}
                 onChange={(e) => setMasterKeys(e.target.value)}
                 placeholder="quinna, admin, instructor"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
               />
               <p className="text-xs text-gray-500 mt-2">
                 Comma-separated list of master access keys that bypass roster authentication

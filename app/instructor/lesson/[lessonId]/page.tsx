@@ -164,7 +164,7 @@ export default function LessonEditorPage() {
                 value={lessonName}
                 onChange={(e) => setLessonName(e.target.value)}
                 placeholder="e.g., Lesson 1: Basic Characters"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
               />
             </div>
 
@@ -177,7 +177,7 @@ export default function LessonEditorPage() {
                 value={lessonDescription}
                 onChange={(e) => setLessonDescription(e.target.value)}
                 placeholder="Brief description of the lesson"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
               />
             </div>
           </div>
@@ -232,7 +232,7 @@ export default function LessonEditorPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by kanji, keyword, or number..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
                 />
               </div>
             </div>

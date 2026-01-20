@@ -232,7 +232,7 @@ export default function InstructorDashboard() {
                   value={newCourseName}
                   onChange={(e) => setNewCourseName(e.target.value)}
                   placeholder="e.g., Japanese 101 - Fall 2026"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
                   autoFocus
                 />
               </div>
@@ -245,7 +245,7 @@ export default function InstructorDashboard() {
                   value={newCourseDescription}
                   onChange={(e) => setNewCourseDescription(e.target.value)}
                   placeholder="Brief description of the course"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
                   rows={3}
                 />
               </div>

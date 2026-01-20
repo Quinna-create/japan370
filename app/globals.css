@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* High contrast input text */
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+  color: #1f2937 !important; /* gray-800 - dark gray, almost black */
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* gray-400 - lighter gray for placeholder only */
+}
+
+/* Ensure disabled inputs are still readable */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  color: #6b7280 !important; /* gray-500 - medium gray */
+}

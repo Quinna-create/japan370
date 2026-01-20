@@ -108,7 +108,7 @@ export default function JoinPage() {
                   handlePreview(e.target.value);
                 }}
                 placeholder="Paste course code from your instructor"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono text-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono text-sm text-gray-800"
                 rows={4}
                 required
               />
