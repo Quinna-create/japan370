@@ -246,11 +246,13 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
       cancelAnimationFrame(animationFrameRef.current);
     }
     
-    // Hide the previous stroke
-    setCurrentStroke(prev => prev - 1);
-    const path = strokePathsRef.current[currentStroke - 1];
+    // Hide the previous stroke (access array before state update)
+    const prevStrokeIndex = currentStroke - 1;
+    const path = strokePathsRef.current[prevStrokeIndex];
     const length = path.getTotalLength();
     path.style.strokeDashoffset = `${length}`;
+    
+    setCurrentStroke(prevStrokeIndex);
   };
 
   const handleSaveStory = async () => {
