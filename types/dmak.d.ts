@@ -4,22 +4,22 @@
  */
 
 declare module 'dmak' {
-  export default class Dmak {
-    constructor(character: string, options?: {
-      element?: HTMLElement;
-      uri?: string;
-      stroke?: {
-        order?: {
-          visible?: boolean;
-          attr?: {
-            [key: string]: any;
-          };
-        };
+  interface DmakOptions {
+    element?: HTMLElement;
+    uri?: string;
+    stroke?: {
+      order?: {
+        visible?: boolean;
+        attr?: Record<string, string | number>;
       };
-      autoplay?: boolean;
-      height?: number;
-      width?: number;
-    });
+    };
+    autoplay?: boolean;
+    height?: number;
+    width?: number;
+  }
+
+  export default class Dmak {
+    constructor(character: string, options?: DmakOptions);
     
     render(): void;
     pause(): void;
