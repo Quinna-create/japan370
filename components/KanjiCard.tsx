@@ -10,6 +10,10 @@ import { Kanji } from '@/types/kanji';
 import { getStudentSession } from '@/lib/storage';
 import { getStory, saveStory } from '@/lib/storage';
 
+// Animation constants
+const STROKE_ANIMATION_DURATION = 500; // milliseconds
+const STROKE_ANIMATION_DELAY = 200; // milliseconds between strokes
+
 interface KanjiCardProps {
   kanji: Kanji;
   showStory?: boolean;
@@ -70,14 +74,23 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     } catch (error) {
       console.error('Error loading stroke order:', error);
       if (containerRef.current) {
-        containerRef.current.innerHTML = `
-          <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center; padding: 20px; font-size: 14px;">
-            <div>
-              <div>Stroke order data not available</div>
-              <div style="font-size: 12px; margin-top: 8px; color: #999;">for this kanji</div>
-            </div>
-          </div>
-        `;
+        // Clear container and create error message elements
+        containerRef.current.innerHTML = '';
+        const errorWrapper = document.createElement('div');
+        errorWrapper.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center; padding: 20px; font-size: 14px;';
+        
+        const errorContent = document.createElement('div');
+        const errorTitle = document.createElement('div');
+        errorTitle.textContent = 'Stroke order data not available';
+        
+        const errorSubtitle = document.createElement('div');
+        errorSubtitle.style.cssText = 'font-size: 12px; margin-top: 8px; color: #999;';
+        errorSubtitle.textContent = 'for this kanji';
+        
+        errorContent.appendChild(errorTitle);
+        errorContent.appendChild(errorSubtitle);
+        errorWrapper.appendChild(errorContent);
+        containerRef.current.appendChild(errorWrapper);
       }
     }
   };
@@ -162,25 +175,27 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     animationFrameRef.current = requestAnimationFrame(animate);
   };
 
-  const animateNextStroke = () => {
-    if (currentStroke >= strokePathsRef.current.length) {
+  const animateNextStroke = (strokeIndex?: number) => {
+    const index = strokeIndex ?? currentStroke;
+    
+    if (index >= strokePathsRef.current.length) {
       setIsPlaying(false);
       return;
     }
     
-    const path = strokePathsRef.current[currentStroke];
+    const path = strokePathsRef.current[index];
     const length = path.getTotalLength();
     
     // Animate stroke from hidden to visible
-    animateStrokePath(path, length, 0, 500, () => {
-      const nextStroke = currentStroke + 1;
+    animateStrokePath(path, length, 0, STROKE_ANIMATION_DURATION, () => {
+      const nextStroke = index + 1;
       setCurrentStroke(nextStroke);
       
       // Continue to next stroke if still playing
       if (nextStroke < strokePathsRef.current.length) {
         setTimeout(() => {
-          animateNextStroke();
-        }, 200); // Small delay between strokes
+          animateNextStroke(nextStroke);
+        }, STROKE_ANIMATION_DELAY);
       } else {
         setIsPlaying(false);
       }
