@@ -23,7 +23,8 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
   const [showStrokeOrder, setShowStrokeOrder] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStroke, setCurrentStroke] = useState(0);
-  const strokeOrderRef = useRef<any>(null);
+  const strokePathsRef = useRef<SVGPathElement[]>([]);
+  const animationFrameRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,87 +35,222 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     }
   }, [kanji.id]);
 
-  // Load dmak library and initialize stroke order animation
+  // Load KanjiVG SVG and initialize stroke order animation
   useEffect(() => {
     if (showStrokeOrder && containerRef.current) {
       loadStrokeOrderAnimation();
     }
     
     return () => {
-      if (strokeOrderRef.current) {
-        // Cleanup if needed
-        strokeOrderRef.current = null;
+      // Cleanup animation frame on unmount
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [showStrokeOrder, kanji.kanji]);
 
   const loadStrokeOrderAnimation = async () => {
     try {
-      // Dynamically import dmak
-      const Dmak = (await import('dmak')).default;
-      
-      if (containerRef.current) {
-        // Clear previous content
-        containerRef.current.innerHTML = '';
-        
-        // Create dmak instance
-        strokeOrderRef.current = new Dmak(kanji.kanji, {
-          element: containerRef.current,
-          uri: 'https://cdn.jsdelivr.net/npm/dmak@2.0.0/dist/',
-          stroke: {
-            order: {
-              visible: true,
-              attr: {
-                'font-size': 12,
-                fill: '#666'
-              }
-            }
-          },
-          autoplay: false,
-          height: 200,
-          width: 200,
-        });
-        
-        setCurrentStroke(0);
+      // Get Unicode code point for the kanji
+      const unicode = kanji.kanji.codePointAt(0)?.toString(16).padStart(5, '0');
+      if (!unicode) {
+        throw new Error('Invalid kanji character');
       }
+      
+      // Fetch SVG from KanjiVG CDN
+      const svgUrl = `https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${unicode}.svg`;
+      const response = await fetch(svgUrl);
+      
+      if (!response.ok) {
+        throw new Error('KanjiVG data not found');
+      }
+      
+      const svgText = await response.text();
+      displayStrokeOrder(svgText);
     } catch (error) {
       console.error('Error loading stroke order:', error);
+      if (containerRef.current) {
+        containerRef.current.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; text-align: center; padding: 20px; font-size: 14px;">
+            <div>
+              <div>Stroke order data not available</div>
+              <div style="font-size: 12px; margin-top: 8px; color: #999;">for this kanji</div>
+            </div>
+          </div>
+        `;
+      }
     }
   };
 
-  const handlePlay = () => {
-    if (strokeOrderRef.current) {
-      if (isPlaying) {
-        strokeOrderRef.current.pause();
+  const displayStrokeOrder = (svgText: string) => {
+    if (!containerRef.current) return;
+    
+    // Parse SVG
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+    const svg = svgDoc.querySelector('svg');
+    
+    if (!svg) {
+      throw new Error('Invalid SVG data');
+    }
+    
+    // Configure SVG display
+    svg.setAttribute('width', '200');
+    svg.setAttribute('height', '200');
+    svg.setAttribute('viewBox', '0 0 109 109');
+    svg.style.display = 'block';
+    
+    // Clear container and add SVG
+    containerRef.current.innerHTML = '';
+    containerRef.current.appendChild(svg);
+    
+    // Setup stroke animation
+    setupStrokeAnimation(svg);
+  };
+
+  const setupStrokeAnimation = (svg: SVGSVGElement) => {
+    // Get all path elements that represent strokes (they have IDs)
+    const paths = Array.from(svg.querySelectorAll('path[id]'));
+    strokePathsRef.current = paths as SVGPathElement[];
+    
+    // Initialize all strokes as hidden
+    paths.forEach((path: Element) => {
+      const pathElement = path as SVGPathElement;
+      const length = pathElement.getTotalLength();
+      
+      // Set up stroke dash animation
+      pathElement.style.strokeDasharray = `${length}`;
+      pathElement.style.strokeDashoffset = `${length}`;
+      pathElement.style.fill = 'none';
+      pathElement.style.stroke = '#000';
+      pathElement.style.strokeWidth = '3';
+      pathElement.style.strokeLinecap = 'round';
+      pathElement.style.strokeLinejoin = 'round';
+    });
+    
+    setCurrentStroke(0);
+  };
+
+  const animateStrokePath = (
+    path: SVGPathElement,
+    fromOffset: number,
+    toOffset: number,
+    duration: number,
+    onComplete: () => void
+  ) => {
+    const startTime = performance.now();
+    
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Ease-in-out function
+      const easeProgress = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      
+      const currentOffset = fromOffset + (toOffset - fromOffset) * easeProgress;
+      path.style.strokeDashoffset = `${currentOffset}`;
+      
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(animate);
       } else {
-        strokeOrderRef.current.render();
+        onComplete();
       }
-      setIsPlaying(!isPlaying);
+    };
+    
+    animationFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  const animateNextStroke = () => {
+    if (currentStroke >= strokePathsRef.current.length) {
+      setIsPlaying(false);
+      return;
+    }
+    
+    const path = strokePathsRef.current[currentStroke];
+    const length = path.getTotalLength();
+    
+    // Animate stroke from hidden to visible
+    animateStrokePath(path, length, 0, 500, () => {
+      const nextStroke = currentStroke + 1;
+      setCurrentStroke(nextStroke);
+      
+      // Continue to next stroke if still playing
+      if (nextStroke < strokePathsRef.current.length) {
+        setTimeout(() => {
+          animateNextStroke();
+        }, 200); // Small delay between strokes
+      } else {
+        setIsPlaying(false);
+      }
+    });
+  };
+
+  const handlePlay = () => {
+    if (!strokePathsRef.current.length) return;
+    
+    if (isPlaying) {
+      // Pause animation
+      setIsPlaying(false);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    } else {
+      // Start or resume animation
+      setIsPlaying(true);
+      animateNextStroke();
     }
   };
 
   const handleReset = () => {
-    if (strokeOrderRef.current) {
-      strokeOrderRef.current.eraseLastStrokes(999);
-      setCurrentStroke(0);
-      setIsPlaying(false);
+    if (!strokePathsRef.current.length) return;
+    
+    // Stop any ongoing animation
+    setIsPlaying(false);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
+    
+    // Reset all strokes to hidden
+    strokePathsRef.current.forEach((path: SVGPathElement) => {
+      const length = path.getTotalLength();
+      path.style.strokeDashoffset = `${length}`;
+    });
+    
+    setCurrentStroke(0);
   };
 
   const handleStepForward = () => {
-    if (strokeOrderRef.current) {
-      strokeOrderRef.current.renderNextStrokes(1);
-      setCurrentStroke(prev => Math.min(prev + 1, kanji.strokeCount || 0));
-      setIsPlaying(false);
+    if (!strokePathsRef.current.length || currentStroke >= strokePathsRef.current.length) return;
+    
+    // Stop any ongoing animation
+    setIsPlaying(false);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
+    
+    // Show the next stroke instantly
+    const path = strokePathsRef.current[currentStroke];
+    path.style.strokeDashoffset = '0';
+    
+    setCurrentStroke(prev => prev + 1);
   };
 
   const handleStepBackward = () => {
-    if (strokeOrderRef.current) {
-      strokeOrderRef.current.eraseLastStrokes(1);
-      setCurrentStroke(prev => Math.max(prev - 1, 0));
-      setIsPlaying(false);
+    if (!strokePathsRef.current.length || currentStroke <= 0) return;
+    
+    // Stop any ongoing animation
+    setIsPlaying(false);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
+    
+    // Hide the previous stroke
+    setCurrentStroke(prev => prev - 1);
+    const path = strokePathsRef.current[currentStroke - 1];
+    const length = path.getTotalLength();
+    path.style.strokeDashoffset = `${length}`;
   };
 
   const handleSaveStory = async () => {
@@ -202,7 +338,7 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
             <button
               onClick={handleStepForward}
               className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-300"
-              disabled={currentStroke >= (kanji.strokeCount || 0)}
+              disabled={currentStroke >= strokePathsRef.current.length}
               title="Next stroke"
             >
               <ChevronRight size={18} />
@@ -218,7 +354,7 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
           </div>
 
           <div className="text-xs text-center text-purple-700 mt-3">
-            Stroke {currentStroke} of {kanji.strokeCount || 0}
+            Stroke {currentStroke} of {strokePathsRef.current.length || kanji.strokeCount || 0}
           </div>
         </div>
       )}
