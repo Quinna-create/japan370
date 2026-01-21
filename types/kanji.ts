@@ -8,6 +8,7 @@ export interface Kanji {
   kanji: string;
   keyword: string;
   heisig_number: string;
+  strokeCount: number;
   primitives: string[];
   user_story: string;
   last_reviewed: string | null;

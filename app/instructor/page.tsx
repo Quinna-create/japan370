@@ -7,9 +7,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BookOpen, Users, Settings, Plus, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
+import { BookOpen, Users, Settings, Eye, EyeOff } from 'lucide-react';
 import { getStudentSession } from '@/lib/storage';
-import { getCourse, initializeCourse, getLessons, deleteLesson, updateLesson } from '@/lib/lessonData';
+import { getCourse, initializeCourse, getLessons, toggleLessonActive } from '@/lib/lessonData';
 import { getRoster, getRosterStats } from '@/lib/rosterData';
 import { Lesson } from '@/types/kanji';
 
@@ -54,18 +54,8 @@ export default function InstructorDashboard() {
   };
 
   const handleToggleActive = (lessonId: string) => {
-    const lesson = lessons.find((l) => l.id === lessonId);
-    if (lesson) {
-      updateLesson(lessonId, { isActive: !lesson.isActive });
-      loadDashboard();
-    }
-  };
-
-  const handleDeleteLesson = (lessonId: string) => {
-    if (confirm('Are you sure you want to delete this lesson?')) {
-      deleteLesson(lessonId);
-      loadDashboard();
-    }
+    toggleLessonActive(lessonId);
+    loadDashboard();
   };
 
   const roster = getRoster();
@@ -116,15 +106,7 @@ export default function InstructorDashboard() {
         </div>
 
         {/* Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Link
-            href="/instructor/lesson/new"
-            className="bg-blue-600 text-white rounded-lg p-6 hover:bg-blue-700 transition-colors flex items-center space-x-3"
-          >
-            <Plus size={24} />
-            <span className="text-lg font-medium">Create New Lesson</span>
-          </Link>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <Link
             href="/instructor/roster"
             className="bg-purple-600 text-white rounded-lg p-6 hover:bg-purple-700 transition-colors flex items-center space-x-3"
@@ -145,14 +127,17 @@ export default function InstructorDashboard() {
         {/* Lessons List */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">Lessons</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">RTK Book 1 Lessons</h2>
+            <p className="text-sm text-gray-600">
+              Lessons are pre-configured based on the RTK Book 1 curriculum. Use the toggle to activate or deactivate lessons for your students.
+            </p>
           </div>
 
           {lessons.length === 0 ? (
             <div className="p-12 text-center text-gray-500">
               <BookOpen size={48} className="mx-auto mb-4 text-gray-400" />
-              <p className="text-lg mb-2">No lessons yet</p>
-              <p className="text-sm">Create your first lesson to get started</p>
+              <p className="text-lg mb-2">No lessons configured</p>
+              <p className="text-sm">Lessons will be automatically created when a course is initialized</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-200">
@@ -176,14 +161,14 @@ export default function InstructorDashboard() {
                         </div>
                         <p className="text-gray-600 text-sm mb-2">{lesson.description}</p>
                         <p className="text-gray-500 text-xs">
-                          {lesson.kanjiIds.length} kanji • Order: {lesson.order}
+                          {lesson.kanjiIds.length} kanji
                         </p>
                       </div>
 
                       <div className="flex items-center space-x-2 ml-4">
                         <button
                           onClick={() => handleToggleActive(lesson.id)}
-                          className={`p-2 rounded-lg ${
+                          className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
                             lesson.isActive
                               ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                               : 'bg-green-100 hover:bg-green-200 text-green-700'
@@ -191,22 +176,7 @@ export default function InstructorDashboard() {
                           title={lesson.isActive ? 'Deactivate' : 'Activate'}
                         >
                           {lesson.isActive ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-
-                        <Link
-                          href={`/instructor/lesson/${lesson.id}`}
-                          className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700"
-                          title="Edit"
-                        >
-                          <Edit size={18} />
-                        </Link>
-
-                        <button
-                          onClick={() => handleDeleteLesson(lesson.id)}
-                          className="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700"
-                          title="Delete"
-                        >
-                          <Trash2 size={18} />
+                          <span className="text-sm">{lesson.isActive ? 'Deactivate' : 'Activate'}</span>
                         </button>
                       </div>
                     </div>
