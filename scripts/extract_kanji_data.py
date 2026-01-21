@@ -2,18 +2,84 @@
 """
 Extract kanji data from Heisig RTK Index ZIP files.
 Parses TSV files and generates structured JSON output.
+Includes stroke count extraction from KanjiVG data.
 """
 
 import zipfile
 import json
 import csv
 from pathlib import Path
+import urllib.request
+import xml.etree.ElementTree as ET
+import time
+import os
+
+# Cache file for stroke counts
+STROKE_COUNT_CACHE_FILE = Path("scripts/stroke_count_cache.json")
+
+def load_stroke_count_cache():
+    """Load cached stroke counts from file."""
+    if STROKE_COUNT_CACHE_FILE.exists():
+        try:
+            with open(STROKE_COUNT_CACHE_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_stroke_count_cache(cache):
+    """Save stroke count cache to file."""
+    STROKE_COUNT_CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(STROKE_COUNT_CACHE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
+
+
+def get_kanjivg_stroke_count(kanji_char, cache, retry_count=3):
+    """
+    Fetch stroke count from KanjiVG GitHub repository.
+    Returns the number of strokes, or None if unavailable.
+    Uses cache to avoid redundant requests.
+    """
+    # Check cache first
+    if kanji_char in cache:
+        return cache[kanji_char]
+    
+    unicode_hex = f"{ord(kanji_char):05x}"
+    url = f"https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/{unicode_hex}.svg"
+    
+    for attempt in range(retry_count):
+        try:
+            with urllib.request.urlopen(url, timeout=10) as response:
+                svg_data = response.read().decode('utf-8')
+            
+            # Parse SVG and count path elements (each path = one stroke)
+            root = ET.fromstring(svg_data)
+            paths = root.findall('.//{http://www.w3.org/2000/svg}path')
+            
+            if not paths:
+                paths = root.findall('.//path')
+            
+            count = len(paths) if paths else None
+            if count is not None:
+                cache[kanji_char] = count
+            return count
+        except Exception as e:
+            if attempt < retry_count - 1:
+                time.sleep(0.5)  # Wait before retry
+                continue
+            return None
+    
+    return None
 
 
 def extract_kanji_data(zip_paths, output_path):
     """Extract kanji data from one or more ZIP files containing TSV data."""
     kanji_list = []
     seen_kanji = set()  # Track duplicates
+    
+    # Load stroke count cache
+    stroke_count_cache = load_stroke_count_cache()
+    print(f"📦 Loaded {len(stroke_count_cache)} cached stroke counts")
     
     for zip_path in zip_paths:
         if not zip_path.exists():
@@ -66,11 +132,28 @@ def extract_kanji_data(zip_paths, output_path):
                                       row.get('keyword_5th_ed', '') or 
                                       row.get('keyword', '')).strip()
                             
+                            # Fetch stroke count from KanjiVG
+                            stroke_count = get_kanjivg_stroke_count(kanji_char, stroke_count_cache)
+                            if stroke_count is None:
+                                # Fallback: estimate based on character complexity
+                                # Most kanji have 8-12 strokes on average
+                                stroke_count = 10
+                                print(f"  ⚠️  Could not fetch stroke count for {kanji_char} (#{heisig_num}), using default: {stroke_count}")
+                            else:
+                                # Show progress every 50 kanji
+                                if len(kanji_list) % 50 == 0:
+                                    print(f"  ✓ Processed {len(kanji_list)} kanji...")
+                            
+                            # Add small delay to avoid rate limiting (only if fetching from web)
+                            if kanji_char not in stroke_count_cache:
+                                time.sleep(0.1)
+                            
                             kanji_entry = {
                                 "id": len(kanji_list) + 1,
                                 "kanji": kanji_char,
                                 "keyword": keyword,
                                 "heisig_number": heisig_num,
+                                "strokeCount": stroke_count,
                                 "primitives": primitives,
                                 "user_story": "",
                                 "last_reviewed": None,
@@ -91,6 +174,10 @@ def extract_kanji_data(zip_paths, output_path):
             return 99999
     
     kanji_list.sort(key=get_sort_key)
+    
+    # Save stroke count cache
+    save_stroke_count_cache(stroke_count_cache)
+    print(f"\n💾 Saved stroke count cache with {len(stroke_count_cache)} entries")
     
     # Write to JSON file
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -120,7 +207,7 @@ def main():
     if kanji_data:
         print("\n📊 Sample entries:")
         for entry in kanji_data[:3]:
-            print(f"  {entry['heisig_number']}: {entry['kanji']} - {entry['keyword']}")
+            print(f"  {entry['heisig_number']}: {entry['kanji']} ({entry['strokeCount']} strokes) - {entry['keyword']}")
 
 
 if __name__ == "__main__":
