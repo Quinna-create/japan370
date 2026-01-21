@@ -29,6 +29,7 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
   const [currentStroke, setCurrentStroke] = useState(0);
   const strokePathsRef = useRef<SVGPathElement[]>([]);
   const animationFrameRef = useRef<number | null>(null);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,9 +47,12 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     }
     
     return () => {
-      // Cleanup animation frame on unmount
+      // Cleanup animation frame and timeout on unmount
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
       }
     };
   }, [showStrokeOrder, kanji.kanji]);
@@ -193,8 +197,11 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
       
       // Continue to next stroke if still playing
       if (nextStroke < strokePathsRef.current.length) {
-        setTimeout(() => {
-          animateNextStroke(nextStroke);
+        animationTimeoutRef.current = setTimeout(() => {
+          // Check if still playing before continuing
+          if (isPlaying) {
+            animateNextStroke(nextStroke);
+          }
         }, STROKE_ANIMATION_DELAY);
       } else {
         setIsPlaying(false);
@@ -211,6 +218,9 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
     } else {
       // Start or resume animation
       setIsPlaying(true);
@@ -225,6 +235,9 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     setIsPlaying(false);
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
     }
     
     // Reset all strokes to hidden
@@ -244,6 +257,9 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+    }
     
     // Show the next stroke instantly
     const path = strokePathsRef.current[currentStroke];
@@ -259,6 +275,9 @@ export default function KanjiCard({ kanji, showStory = true, editableStory = tru
     setIsPlaying(false);
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
     }
     
     // Hide the previous stroke (access array before state update)
