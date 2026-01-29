@@ -10,8 +10,8 @@ University of Wisconsin–Milwaukee | Spring 2026 | Fridays
 
 This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on systematic kanji learning through mnemonic stories and spaced repetition.
 
-### Weeks 1-11: RTK Book 1 (Frames 1-766)  
-### Weeks 12-15: RTK Book 2 (Frames TBD)
+### Weeks 1-10: RTK Book 1 (Frames 1-766)  
+### Weeks 11-15: RTK Book 2 (Frames TBD)
 
 ---
 
@@ -134,21 +134,11 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 **Activities:**
 - Study 113 new kanji with sophisticated compositions
 - Quiz on Frames 353–395
-- Peak SRS review load before break
+- Continue SRS review schedule
 
 ---
 
-### 📅 Week 9 — March 27, 2026
-🌸 **Spring Break — No Class**
-
-**Recommended Activities:**
-- Review and consolidate all kanji learned so far (Frames 1–508)
-- Catch up on SRS reviews
-- Strengthen weak kanji with additional story writing
-
----
-
-### 📅 Week 10 — April 3, 2026
+### 📅 Week 9 — April 3, 2026
 **RTK Book 1: Frames 509–577** (69 kanji)
 
 - 📖 Study Mode Practice
@@ -157,13 +147,13 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 - 📄 Heisig Frames 509–577
 
 **Activities:**
-- Return from break with 69 new kanji
+- Study 69 new kanji solidifying advanced patterns
 - Quiz on Frames 396–508
-- Resume regular SRS schedule
+- Maintain SRS review schedule
 
 ---
 
-### 📅 Week 11 — April 10, 2026
+### 📅 Week 10 — April 10, 2026
 **RTK Book 1: Frames 578–766** (189 kanji)
 
 - 📖 Study Mode Practice
@@ -178,7 +168,7 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 
 ---
 
-### 📅 Week 12 — April 17, 2026
+### 📅 Week 11 — April 17, 2026
 **RTK Book 2: Frames TBD**
 
 - 📖 Study Mode Practice
@@ -193,7 +183,7 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 
 ---
 
-### 📅 Week 13 — April 24, 2026
+### 📅 Week 12 — April 24, 2026
 **RTK Book 2: Frames TBD**
 
 - 📖 Study Mode Practice
@@ -203,11 +193,12 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 
 **Activities:**
 - Continue RTK Book 2
+- Frame ranges to be determined
 - Maintain comprehensive SRS reviews
 
 ---
 
-### 📅 Week 14 — May 1, 2026
+### 📅 Week 13 — May 1, 2026
 **RTK Book 2: Frames TBD**
 
 - 📖 Study Mode Practice
@@ -217,11 +208,27 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 
 **Activities:**
 - Continue RTK Book 2
+- Frame ranges to be determined
+- Maintain comprehensive SRS reviews
+
+---
+
+### 📅 Week 14 — May 8, 2026
+**RTK Book 2: Frames TBD**
+
+- 📖 Study Mode Practice
+- 📝 Quiz Mode
+- 🔄 SRS Review
+- 📄 Book 2 Frames TBD
+
+**Activities:**
+- Continue RTK Book 2
+- Frame ranges to be determined
 - Prepare for final assessments
 
 ---
 
-### 📅 Week 15 — May 8, 2026
+### 📅 Week 15 — May 15, 2026
 **RTK Book 2: Frames TBD**
 
 - 📖 Study Mode Practice
@@ -245,7 +252,6 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 | 📝 | Quiz Mode | Test knowledge with various quiz types |
 | 🔄 | SRS Review | Spaced Repetition System daily reviews |
 | 📄 | Heisig Frames | Assigned frame range from RTK textbook |
-| 🌸 | Spring Break | No class meeting |
 
 ---
 
@@ -269,17 +275,17 @@ This course covers Heisig's "Remembering the Kanji" (RTK) method, focusing on sy
 - **Quiz Mode**: Test retention of previous week's kanji
 - **SRS Review**: Daily practice of all previously learned kanji
 
-### RTK Book 2 (Weeks 12-15)
+### RTK Book 2 (Weeks 11-15)
 - Frame ranges will be determined based on class progress
 - Book 2 focuses on additional common-use kanji
-- Will be announced by Week 10
+- Will be announced by Week 9
 
 ---
 
 ## Total Kanji Coverage
 
-- **Book 1 (Weeks 1-11):** 766 kanji
-- **Book 2 (Weeks 12-15):** TBD kanji
+- **Book 1 (Weeks 1-10):** 766 kanji
+- **Book 2 (Weeks 11-15):** TBD kanji
 - **Total:** ~900+ kanji by end of semester
 
 ---
