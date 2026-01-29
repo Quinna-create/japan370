@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
     <h1>Course Schedule</h1>
-    <div class="week-card">
+    <div class="card">
         <h2>Week 9</h2>
-        <p>Frames: 509-577</p>
+        <p>Frames 509-577</p>
     </div>
-    <div class="week-card">
+    <div class="card">
         <h2>Week 10</h2>
-        <p>Frames: 578-766</p>
+        <p>Frames 578-766</p>
     </div>
-    <div class="week-card">
+    <div class="card">
         <h2>Week 11</h2>
-        <p>RTK Book 2 (frames TBD)</p>
+        <p>Weeks 11-15 RTK Book 2 (frames TBD)</p>
     </div>
 </body>
 </html>
