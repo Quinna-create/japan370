@@ -1,38 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Schedule</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan 370 Course Schedule</title>
     <style>
         body {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
             font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #8e44ad, #3498db);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         .card {
-            margin: 20px;
-            padding: 20px;
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            width: 200px;
             transition: transform 0.2s;
+            animation: fadeIn 1s;
         }
         .card:hover {
             transform: scale(1.05);
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <h1>Course Schedule</h1>
-    <div class="card">
-        <h2>Week 9</h2>
-        <p>Frames 509-577</p>
-    </div>
-    <div class="card">
-        <h2>Week 10</h2>
-        <p>Frames 578-766</p>
-    </div>
-    <div class="card">
-        <h2>Week 11</h2>
-        <p>Weeks 11-15 RTK Book 2 (frames TBD)</p>
+    <h1>Japan 370 Course Schedule</h1>
+    <div class="container">
+        <div class="card">
+            <h2>Week 1</h2>
+            <p>Frames: 1-32</p>
+        </div>
+        <div class="card">
+            <h2>Week 2</h2>
+            <p>Frames: 33-70</p>
+        </div>
+        <div class="card">
+            <h2>Week 3</h2>
+            <p>Frames: 71-172</p>
+        </div>
+        <div class="card">
+            <h2>Week 4</h2>
+            <p>Frames: 173-234</p>
+        </div>
+        <div class="card">
+            <h2>Week 5</h2>
+            <p>Frames: 235-276</p>
+        </div>
+        <div class="card">
+            <h2>Week 6</h2>
+            <p>Frames: 277-352</p>
+        </div>
+        <div class="card">
+            <h2>Week 7</h2>
+            <p>Frames: 353-395</p>
+        </div>
+        <div class="card">
+            <h2>Week 8</h2>
+            <p>Frames: 396-508</p>
+        </div>
+        <div class="card">
+            <h2>Week 9</h2>
+            <p>Frames: 509-577</p>
+        </div>
+        <div class="card">
+            <h2>Week 10</h2>
+            <p>Frames: 578-766</p>
+        </div>
+        <div class="card">
+            <h2>Weeks 11-15</h2>
+            <p>RTK Book 2 (frames TBD)</p>
+        </div>
     </div>
 </body>
 </html>
